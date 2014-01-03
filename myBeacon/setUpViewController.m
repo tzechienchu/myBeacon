@@ -11,6 +11,9 @@
 
 @interface setUpViewController ()
 @property (nonatomic, strong) iBeaconScaner *beaconScaner;
+
+@property (weak, nonatomic) IBOutlet UIButton *stopBtn;
+@property (weak, nonatomic) IBOutlet UIButton *startBtn;
 @end
 
 @implementation setUpViewController
@@ -27,10 +30,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.beaconScaner = [[iBeaconScaner alloc ] initWithUUID:@"5AFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"];
-    
-	// Do any additional setup after loading the view.
+    _beaconScaner = [iBeaconScaner sharedInstance];
+    _beaconScaner.kUUID = @"5AFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF";
+    _beaconScaner.kIdentifier = @"Test";
+
 }
+- (IBAction)startRange:(id)sender {
+    _startBtn.enabled = NO;
+    _stopBtn.enabled = YES;
+    [self.beaconScaner startRangingForBeacons];
+}
+- (IBAction)stopRange:(id)sender {
+    _startBtn.enabled = YES;
+    _stopBtn.enabled = NO;
+    [self.beaconScaner stopRangingForBeacons];
+}
+
 
 - (void)didReceiveMemoryWarning
 {

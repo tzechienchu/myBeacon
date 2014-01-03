@@ -13,10 +13,10 @@
                         <viewControllerLayoutGuide type="bottom" id="fCE-Bf-4vA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fnA-6J-YkI">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MrD-n4-088">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="5AFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" borderStyle="roundedRect" placeholder="FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MrD-n4-088">
                                 <rect key="frame" x="20" y="68" width="280" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -53,14 +53,24 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hL7-x0-cte">
-                                <rect key="frame" x="20" y="224" width="34" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hL7-x0-cte">
+                                <rect key="frame" x="20" y="224" width="103" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save">
+                                <state key="normal" title="Start Range">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="btnSaveSetting:" destination="nLq-2c-IBU" eventType="touchUpInside" id="7fg-38-Cgj"/>
+                                    <action selector="startRange:" destination="nLq-2c-IBU" eventType="touchUpInside" id="jnI-EU-dTP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XmU-MS-LWu">
+                                <rect key="frame" x="217" y="224" width="103" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Stop Range">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="stopRange:" destination="nLq-2c-IBU" eventType="touchUpInside" id="Y2n-Av-Far"/>
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="* for all" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LQV-JC-DZp">
@@ -74,6 +84,8 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="SetUp" id="Scx-c4-2nc"/>
                     <connections>
+                        <outlet property="startBtn" destination="hL7-x0-cte" id="eTo-U3-y2a"/>
+                        <outlet property="stopBtn" destination="XmU-MS-LWu" id="EWK-56-MTr"/>
                         <outlet property="txtMajorNo" destination="wg2-ac-D6z" id="bPt-ac-534"/>
                         <outlet property="txtMinorNo" destination="P4k-pp-4ZJ" id="MKc-8n-4AK"/>
                         <outlet property="txtUUID" destination="MrD-n4-088" id="akh-8B-taJ"/>
@@ -103,21 +115,30 @@
             </objects>
             <point key="canvasLocation" x="-65" y="270"/>
         </scene>
-        <!--Table View Controller - Becaons-->
+        <!--Beacon Table View View Controller - Becaons-->
         <scene sceneID="qG3-Uc-SMV">
             <objects>
-                <tableViewController id="iTV-8V-8wX" sceneMemberID="viewController">
+                <tableViewController id="iTV-8V-8wX" customClass="beaconTableViewViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="IA7-vk-KXa">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="8Pc-px-Udj">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="beaconCell" textLabel="VHs-ef-cYe" style="IBUITableViewCellStyleDefault" id="8Pc-px-Udj">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8Pc-px-Udj" id="GJL-k3-IPM">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VHs-ef-cYe">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
@@ -127,10 +148,13 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Becaons" id="eCm-6I-0rC"/>
+                    <connections>
+                        <outlet property="beaconStatusTableView" destination="IA7-vk-KXa" id="8G0-dJ-Mta"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EOQ-Sz-nKG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="469" y="608"/>
+            <point key="canvasLocation" x="476" y="626"/>
         </scene>
         <!--View Controller - Data-->
         <scene sceneID="eoL-ph-MBW">
@@ -141,7 +165,7 @@
                         <viewControllerLayoutGuide type="bottom" id="vNT-HE-4SK"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="5m5-Yl-7l7">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -156,6 +180,6 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
+        <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
 </document>

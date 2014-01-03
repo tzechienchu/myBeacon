@@ -7,12 +7,26 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "iBeaconActions.h"
+#import "iBeaconStates.h"
 
 @import CoreLocation;
 @import CoreBluetooth;
 
-@interface iBeaconScaner : NSObject
+@interface iBeaconScaner : NSObject <CLLocationManagerDelegate, CBPeripheralManagerDelegate>
 
-- (id) initWithUUID:(NSString *)UUID;
+@property (nonatomic, strong) NSString *kUUID;
+@property (nonatomic, strong) NSString *kIdentifier;
 
+@property (nonatomic, strong) NSArray             *detectedBeaconsNow;
+@property (nonatomic, strong) NSArray             *detectedBeaconsPrevious;
+@property (nonatomic, strong) NSArray             *beaconsDetails;
+@property (nonatomic, strong) NSArray             *beaconsAction;
+@property (nonatomic, strong) NSMutableDictionary *beaconsState;
+
+@property BOOL rangeOn;
+
++ (id)sharedInstance;
+- (void)stopRangingForBeacons;
+- (void)startRangingForBeacons;
 @end

@@ -2,6 +2,9 @@
 //  iBeaconScaner.m
 //  myBeacon
 //
+//  Created by Nick Toumpelis on 2013-10-06.
+//  Copyright (c) 2013 Nick Toumpelis.
+//
 //  Created by TzeChien Chu on 2013/12/24.
 //  Copyright (c) 2013年 TzeChien Chu. All rights reserved.
 //
@@ -12,11 +15,6 @@
 @property (nonatomic, strong) CLLocationManager   *locationManager;
 @property (nonatomic, strong) CLBeaconRegion      *beaconRegion;
 @property (nonatomic, strong) CBPeripheralManager *peripheralManager;
-@property (nonatomic, strong) NSArray             *detectedBeacons;
-
-@property (nonatomic, strong) NSString *kUUID;
-@property (nonatomic, strong) NSString *kIdentifier;
-@property BOOL rangeOn;
 
 @end
 
@@ -32,14 +30,16 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
 
 @implementation iBeaconScaner
 
-- (id) initWithUUID:(NSString *)UUID
++ (id)sharedInstance
 {
-    if (!(self = [super init])) {
-        return nil;
-    }
-    self.kUUID = [NSString stringWithString:UUID];
-    [self changeRangingState:YES];
-    return self;
+    static id sharedInstance = nil;
+    
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        sharedInstance = [[iBeaconScaner alloc] init];
+    });
+    
+    return sharedInstance;
 }
 
 #pragma mark - Beacon ranging
@@ -50,7 +50,10 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     
     NSUUID *proximityUUID = [[NSUUID alloc] initWithUUIDString:self.kUUID];
     //self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:self.kIdentifier];
-    self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:@"Test"];
+    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:self.kIdentifier];
+    _beaconRegion.notifyOnEntry = YES;
+    _beaconRegion.notifyOnExit = YES;
+    _beaconRegion.notifyEntryStateOnDisplay = YES;
 }
 
 - (void)turnOnRanging
@@ -90,7 +93,11 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
-    self.detectedBeacons = [NSArray array];
+    self.detectedBeaconsNow = [NSArray array];
+    self.detectedBeaconsPrevious = [NSArray array];
+    self.beaconsState = [NSMutableDictionary dictionaryWithCapacity:10];
+    
+    [self setUpBeaconsActions];
     
     [self turnOnRanging];
 }
@@ -104,97 +111,19 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     
     [self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
     
-    NSIndexSet *deletedSections = [self deletedSections];
-    self.detectedBeacons = [NSArray array];
-    
-/*
-    [self.beaconTableView beginUpdates];
-    if (deletedSections) {
-        [self.beaconTableView deleteSections:deletedSections withRowAnimation:UITableViewRowAnimationFade];
-    }
-    [self.beaconTableView endUpdates];
-*/
+//    NSIndexSet *deletedSections = [self deletedSections];
+//    self.detectedBeacons = [NSArray array];
+//    
+//
+//    [self.beaconTableView beginUpdates];
+//    if (deletedSections) {
+//        [self.beaconTableView deleteSections:deletedSections withRowAnimation:UITableViewRowAnimationFade];
+//    }
+//    [self.beaconTableView endUpdates];
+ 
     NSLog(@"Turned off ranging.");
 }
 
-#pragma mark - Index path management
-- (NSArray *)indexPathsOfRemovedBeacons:(NSArray *)beacons
-{
-    NSMutableArray *indexPaths = nil;
-    
-    NSUInteger row = 0;
-    for (CLBeacon *existingBeacon in self.detectedBeacons) {
-        BOOL stillExists = NO;
-        for (CLBeacon *beacon in beacons) {
-            if ((existingBeacon.major.integerValue == beacon.major.integerValue) &&
-                (existingBeacon.minor.integerValue == beacon.minor.integerValue)) {
-                stillExists = YES;
-                break;
-            }
-        }
-        if (!stillExists) {
-            if (!indexPaths)
-                indexPaths = [NSMutableArray new];
-            [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:NTDetectedBeaconsSection]];
-        }
-        row++;
-    }
-    
-    return indexPaths;
-}
-
-- (NSArray *)indexPathsOfInsertedBeacons:(NSArray *)beacons
-{
-    NSMutableArray *indexPaths = nil;
-    
-    NSUInteger row = 0;
-    for (CLBeacon *beacon in beacons) {
-        BOOL isNewBeacon = YES;
-        for (CLBeacon *existingBeacon in self.detectedBeacons) {
-            if ((existingBeacon.major.integerValue == beacon.major.integerValue) &&
-                (existingBeacon.minor.integerValue == beacon.minor.integerValue)) {
-                isNewBeacon = NO;
-                break;
-            }
-        }
-        if (isNewBeacon) {
-            if (!indexPaths)
-                indexPaths = [NSMutableArray new];
-            [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:NTDetectedBeaconsSection]];
-        }
-        row++;
-    }
-    
-    return indexPaths;
-}
-
-- (NSArray *)indexPathsForBeacons:(NSArray *)beacons
-{
-    NSMutableArray *indexPaths = [NSMutableArray new];
-    for (NSUInteger row = 0; row < beacons.count; row++) {
-        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:NTDetectedBeaconsSection]];
-    }
-    
-    return indexPaths;
-}
-
-- (NSIndexSet *)insertedSections
-{
-    if (self.rangeOn) {
-        return [NSIndexSet indexSetWithIndex:1];
-    } else {
-        return nil;
-    }
-}
-
-- (NSIndexSet *)deletedSections
-{
-    if (!self.rangeOn) {
-        return [NSIndexSet indexSetWithIndex:1];
-    } else {
-        return nil;
-    }
-}
 
 - (NSArray *)filteredBeacons:(NSArray *)beacons
 {
@@ -215,6 +144,145 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     }
     
     return [mutableBeacons copy];
+}
+
+#pragma mark - Beacon Parsing
+
+- (NSArray *)parseBeacons:(NSArray *)beacons
+{
+    NSMutableArray *details = [NSMutableArray arrayWithCapacity:10];
+    for (int index = 0; index < [beacons count]; index++) {
+        CLBeacon *curr = [beacons objectAtIndex:index];
+        NSString *detail = [self detailsStringForBeacon:curr];
+        //NSLog(@"%@",detail);
+        [details addObject:detail];
+    }
+    return [details copy];
+}
+
+- (NSArray *)parseBeaconsChange:(NSArray *)beaconsNow andPreviousBeacons:(NSArray *)beaconsPrevious
+{
+    if ([beaconsNow count] == 0) return nil;
+    if ([beaconsPrevious count] == 0) return nil;
+    
+    NSMutableArray *details = [NSMutableArray arrayWithCapacity:10];
+    for (int index = 0; index < [beaconsNow count]; index++) {
+        CLBeacon *curr1 = [beaconsNow      objectAtIndex:index];
+        for(int index2 = 0; index2 <[beaconsPrevious count];index2++) {
+            CLBeacon *curr2 = [beaconsPrevious objectAtIndex:index2];
+            if ([curr1.major isEqualToNumber:curr2.major] && [curr1.minor isEqualToNumber:curr2.minor]) {
+                NSString *detail = [self changesForBeaconsNow:curr1 andBeaconsPrevious:curr2];
+                NSLog(@"%@",detail);
+                [details addObject:detail];
+                continue;
+            } else {
+                //NSLog(@"%@ - %@ // %@ - %@ ",curr1.major,curr2.major,curr1.minor,curr2.minor);
+            }
+        }
+    }
+    return [details copy];
+}
+- (void)updateBeaconState:(NSArray *)beaconsNow
+{
+    for(CLBeacon *bp in beaconsNow) {
+        NSString *bpdist = [self getProximityFromBeacon:bp];
+        NSString *bpid = [NSString stringWithFormat:@"%@",bp.minor];
+        iBeaconStates *mybps = [_beaconsState objectForKey:bpid];
+        if (mybps) {
+            [mybps insertDistanceWithKey:bpid andBeacon:bpdist];
+            NSLog(@"%@ %@",bp.minor,mybps.beaconState);
+        } else {
+            iBeaconStates *bs = [[iBeaconStates alloc] init];
+            bs = [bs initBeaconStateWithKey:bpid andBeacon:bpdist];
+            [_beaconsState setObject:bs forKey:bpid];
+        }
+    }
+}
+- (NSString *)getProximityFromBeacon:(CLBeacon *)beacon
+{
+    NSString *proximity;
+    switch (beacon.proximity) {
+        case CLProximityNear:
+            proximity = @"Near";
+            break;
+        case CLProximityImmediate:
+            proximity = @"Immediate";
+            break;
+        case CLProximityFar:
+            proximity = @"Far";
+            break;
+        case CLProximityUnknown:
+        default:
+            proximity = @"Unknown";
+            break;
+    }
+    return [proximity copy];
+}
+
+- (NSString *)detailsStringForBeacon:(CLBeacon *)beacon
+{
+    NSString *proximity;
+    proximity = [self getProximityFromBeacon:beacon];
+    NSString *format = @"%@, %@ • %@ • %.2fm • %li";
+    return [NSString stringWithFormat:format, beacon.major, beacon.minor, proximity, beacon.accuracy, beacon.rssi];
+}
+
+- (NSString *)changesForBeaconsNow:(CLBeacon *)beaconNow andBeaconsPrevious:(CLBeacon *)beaconPrevious
+{
+    NSString *proximityNow;
+    NSString *proximityPrevious;
+    proximityNow      = [self getProximityFromBeacon:beaconNow];
+    proximityPrevious = [self getProximityFromBeacon:beaconPrevious];
+    
+    NSString *format = @"%@, %@ -> %@";
+    return [NSString stringWithFormat:format, beaconNow.minor, proximityPrevious, proximityNow];
+}
+
+#pragma mark - Beacon Actions
+
+- (void)setUpBeaconsActions
+{
+
+    iBeaconActions *myBeacon1 = [[iBeaconActions alloc] init];
+    myBeacon1.beaconID = @"4098";//4102
+    myBeacon1.beaconState = @"Enter";//Leave
+    myBeacon1.triggerMode = @"Once";
+    myBeacon1.actionCommand = @"Show URL";
+    myBeacon1.actionParameters = @"www.apple.com";
+    
+    iBeaconActions *myBeacon2 = [[iBeaconActions alloc] init];
+    myBeacon2.beaconID = @"4102";//4102
+    myBeacon2.beaconState = @"Leave";//Leave
+    myBeacon2.triggerMode = @"Always";
+    myBeacon2.actionCommand = @"Show Image";
+    myBeacon2.actionParameters = @"Pigs";
+
+    _beaconsAction = [NSArray arrayWithObjects:myBeacon1,myBeacon2, nil];
+    
+}
+
+- (iBeaconActions *)getActionWithBeaconID:(NSString *)beaconID andState:(NSString *)beaconState
+{
+    for(iBeaconActions *ba in _beaconsAction) {
+        if ([ba.beaconID isEqualToString:beaconID] && [ba.beaconState isEqualToString:beaconState]) {
+            return ba;
+        }
+    }
+    return nil;
+}
+
+//Only State Change We will find Actions.
+- (void)checkActionsWithBeacons:(NSArray *)beacons
+{
+    iBeaconActions *ba;
+    for (int index = 0; index < [beacons count]; index++) {
+        CLBeacon *curr = [beacons objectAtIndex:index];
+        NSString *bpid = [NSString stringWithFormat:@"%@",curr.minor];
+        iBeaconStates *bpst = [_beaconsState objectForKey:bpid];
+        
+        ba = [self getActionWithBeaconID:bpid andState:bpst.beaconState];
+        NSLog(@"%@ %@",ba.actionCommand,ba.actionStatus);
+    }
 }
 
 #pragma mark - Beacon ranging delegate methods
@@ -238,6 +306,7 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
 - (void)locationManager:(CLLocationManager *)manager
         didRangeBeacons:(NSArray *)beacons
                inRegion:(CLBeaconRegion *)region {
+    
     NSArray *filteredBeacons = [self filteredBeacons:beacons];
     
     if (filteredBeacons.count == 0) {
@@ -255,8 +324,16 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
 //    if (!deletedRows && !insertedRows)
 //        reloadedRows = [self indexPathsForBeacons:filteredBeacons];
     
-    self.detectedBeacons = filteredBeacons;
+    self.detectedBeaconsPrevious = [_detectedBeaconsNow copy];
+    self.detectedBeaconsNow = filteredBeacons;
     
+    self.beaconsDetails = [self parseBeacons:filteredBeacons];
+    [self updateBeaconState:_detectedBeaconsNow];
+    [self checkActionsWithBeacons:_detectedBeaconsNow];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateBeacon" object:nil];
+    
+
 }
 
 @end

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		74386B461871711F003DA5AF /* beaconTableViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74386B451871711F003DA5AF /* beaconTableViewViewController.m */; };
+		745705B11875487E00B4FA95 /* iBeaconActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 745705B01875487E00B4FA95 /* iBeaconActions.m */; };
+		745705B4187561FC00B4FA95 /* iBeaconStates.m in Sources */ = {isa = PBXBuildFile; fileRef = 745705B3187561FC00B4FA95 /* iBeaconStates.m */; };
 		74AC403218693CA70092EC5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AC403118693CA70092EC5D /* Foundation.framework */; };
 		74AC403418693CA70092EC5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AC403318693CA70092EC5D /* CoreGraphics.framework */; };
 		74AC403618693CA70092EC5D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AC403518693CA70092EC5D /* UIKit.framework */; };
@@ -37,6 +40,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		74386B441871711F003DA5AF /* beaconTableViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beaconTableViewViewController.h; sourceTree = "<group>"; };
+		74386B451871711F003DA5AF /* beaconTableViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = beaconTableViewViewController.m; sourceTree = "<group>"; };
+		745705AF1875487E00B4FA95 /* iBeaconActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iBeaconActions.h; sourceTree = "<group>"; };
+		745705B01875487E00B4FA95 /* iBeaconActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iBeaconActions.m; sourceTree = "<group>"; };
+		745705B2187561FC00B4FA95 /* iBeaconStates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iBeaconStates.h; sourceTree = "<group>"; };
+		745705B3187561FC00B4FA95 /* iBeaconStates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iBeaconStates.m; sourceTree = "<group>"; };
 		74AC402E18693CA70092EC5D /* myBeacon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myBeacon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74AC403118693CA70092EC5D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		74AC403318693CA70092EC5D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -128,10 +137,16 @@
 				74AC404318693CA70092EC5D /* Images.xcassets */,
 				74AC403818693CA70092EC5D /* Supporting Files */,
 				74AC406018693CC70092EC5D /* Storyboard.storyboard */,
+				74386B441871711F003DA5AF /* beaconTableViewViewController.h */,
+				74386B451871711F003DA5AF /* beaconTableViewViewController.m */,
 				74AC406218694FDD0092EC5D /* setUpViewController.h */,
 				74AC406318694FDD0092EC5D /* setUpViewController.m */,
 				74AC406518696DD50092EC5D /* iBeaconScaner.h */,
 				74AC406618696DD50092EC5D /* iBeaconScaner.m */,
+				745705AF1875487E00B4FA95 /* iBeaconActions.h */,
+				745705B01875487E00B4FA95 /* iBeaconActions.m */,
+				745705B2187561FC00B4FA95 /* iBeaconStates.h */,
+				745705B3187561FC00B4FA95 /* iBeaconStates.m */,
 			);
 			path = myBeacon;
 			sourceTree = "<group>";
@@ -263,8 +278,11 @@
 			files = (
 				74AC404218693CA70092EC5D /* AppDelegate.m in Sources */,
 				74AC406418694FDD0092EC5D /* setUpViewController.m in Sources */,
+				74386B461871711F003DA5AF /* beaconTableViewViewController.m in Sources */,
 				74AC403E18693CA70092EC5D /* main.m in Sources */,
+				745705B11875487E00B4FA95 /* iBeaconActions.m in Sources */,
 				74AC406718696DD50092EC5D /* iBeaconScaner.m in Sources */,
+				745705B4187561FC00B4FA95 /* iBeaconStates.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
