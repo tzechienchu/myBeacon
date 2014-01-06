@@ -54,6 +54,7 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     _beaconRegion.notifyOnEntry = YES;
     _beaconRegion.notifyOnExit = YES;
     _beaconRegion.notifyEntryStateOnDisplay = YES;
+    
 }
 
 - (void)turnOnRanging
@@ -73,7 +74,10 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     }
     
     [self createBeaconRegion];
-    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
+    
+    //[_locationManager startRangingBeaconsInRegion:_beaconRegion];
+    [_locationManager startMonitoringForRegion:_beaconRegion];
+    //[self.locationManager requestStateForRegion:self.beaconRegion];
     
     NSLog(@"Ranging turned on for region: %@.", self.beaconRegion);
 }
@@ -90,12 +94,12 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
 
 - (void)startRangingForBeacons
 {
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
+    _locationManager = [[CLLocationManager alloc] init];
+    _locationManager.delegate = self;
     
-    self.detectedBeaconsNow = [NSArray array];
-    self.detectedBeaconsPrevious = [NSArray array];
-    self.beaconsState = [NSMutableDictionary dictionaryWithCapacity:10];
+    _detectedBeaconsNow = [NSArray array];
+    _detectedBeaconsPrevious = [NSArray array];
+    _beaconsState = [NSMutableDictionary dictionaryWithCapacity:10];
     
     [self setUpBeaconsActions];
     
@@ -335,5 +339,41 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     
 
 }
+/*
+
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region {
+    if ([region isKindOfClass:[CLBeaconRegion class]]) {
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.userInfo = @{@"uuid": @"1234"};
+        notification.alertBody = [NSString stringWithFormat:@"Smell that? Looks like you're near %@!", @"ABCD"];
+        notification.soundName = @"Default";
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidEnterRegion" object:self userInfo:@{@"restaurant": @"1234"}];
+
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
+    if ([region isKindOfClass:[CLBeaconRegion class]]) {
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.userInfo = @{@"uuid": @"789"};
+        notification.alertBody = [NSString stringWithFormat:@"Smell that? Looks like you're near %@!", @"ABCD"];
+        notification.soundName = @"Default";
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DidEnterRegion" object:self userInfo:@{@"restaurant": @"789"}];
+
+    }
+}
+
+//Generate Local Notification
+-(void)generateNotification
+{
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    
+    notification.alertBody = @"Got it";
+    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    
+}
+*/
 
 @end

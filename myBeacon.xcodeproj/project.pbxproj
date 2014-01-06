@@ -227,6 +227,13 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "TzeChien Chu";
 				TargetAttributes = {
+					74AC402D18693CA70092EC5D = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
 					74AC404818693CA70092EC5D = {
 						TestTargetID = 74AC402D18693CA70092EC5D;
 					};
