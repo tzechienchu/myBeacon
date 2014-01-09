@@ -75,7 +75,7 @@ typedef NS_ENUM(NSUInteger, NTOperationsRow) {
     
     [self createBeaconRegion];
     
-    //[_locationManager startRangingBeaconsInRegion:_beaconRegion];
+    [_locationManager startRangingBeaconsInRegion:_beaconRegion];
     [_locationManager startMonitoringForRegion:_beaconRegion];
     //[self.locationManager requestStateForRegion:self.beaconRegion];
     
